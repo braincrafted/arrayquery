@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit bootstrap="vendor/autoload.php" colors="true">
+    <testsuites>
+        <testsuite name="braincrafted/arrayquery Test Suite">
+            <directory>tests/Braincrafted/ArrayQuery/</directory>
+        </testsuite>
+    </testsuites>
+
+    <filter>
+        <whitelist>
+            <directory suffix=".php">src/Braincrafted/ArrayQuery/</directory>
+        </whitelist>
+    </filter>
+</phpunit>

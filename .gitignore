@@ -1,0 +1,4 @@
+/composer.lock
+/docs/code-coverage/
+/phpunit.xml
+/vendor/

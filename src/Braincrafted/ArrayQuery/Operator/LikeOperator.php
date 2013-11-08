@@ -35,7 +35,7 @@ class LikeOperator implements OperatorInterface
      */
     public function evaluate($value, $matchValue)
     {
-        $pattern = sprintf('/^%s$/', preg_replace('/(^%)|(%$)/', '.*', $matchValue));
+        $pattern = sprintf('/^%s$/i', preg_replace('/(^%)|(%$)/', '.*', $matchValue));
 
         return 1 === preg_match($pattern, $value);
     }

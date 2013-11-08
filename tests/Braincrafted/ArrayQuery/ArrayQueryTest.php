@@ -65,25 +65,72 @@ class ArrayQueryTest extends \PHPUnit_Framework_TestCase
     {
         $this->whereEvaluation
             ->shouldReceive('evaluate')
-            ->with([ 'name' => 'foo' ], [ 'name', 'foo', '=' ])
+            ->with([ 'name' => 'foo' ], [ 'name', 'foo', '=', [] ])
             ->once()
             ->andReturn(true);
         $this->whereEvaluation
             ->shouldReceive('evaluate')
-            ->with([ 'name' => 'bar' ], [ 'name', 'foo', '=' ])
-            ->once()
-            ->andReturn(false);
-        $this->whereEvaluation
-            ->shouldReceive('evaluate')
-            ->with([ 'name' => 'baz' ], [ 'name', 'foo', '=' ])
+            ->with([ 'name' => 'bar' ], [ 'name', 'foo', '=', [] ])
             ->once()
             ->andReturn(false);
 
-        $data = [ [ 'name' => 'foo' ], [ 'name' => 'bar' ], [ 'name' => 'baz' ] ];
+        $data = [ [ 'name' => 'foo' ], [ 'name' => 'bar' ] ];
         $q = (new ArrayQuery($this->whereEvaluation))
             ->select('name')
             ->from($data)
             ->where('name', 'foo');
+        $result = $q->execute();
+
+        $this->assertCount(1, $result);
+        $this->assertEquals('foo', $result[0]['name']);
+    }
+
+    /**
+     * @covers Braincrafted\ArrayQuery\ArrayQuery::select()
+     * @covers Braincrafted\ArrayQuery\ArrayQuery::from()
+     * @covers Braincrafted\ArrayQuery\ArrayQuery::execute()
+     * @covers Braincrafted\ArrayQuery\ArrayQuery::where()
+     * @covers Braincrafted\ArrayQuery\ArrayQuery::evaluateWhere()
+     */
+    public function testExecuteOperator()
+    {
+        $this->whereEvaluation
+            ->shouldReceive('evaluate')
+            ->with([ 'name' => 'foo' ], [ 'name', 'foo', 'like', [] ])
+            ->once()
+            ->andReturn(true);
+
+        $data = [ [ 'name' => 'foo' ] ];
+        $q = (new ArrayQuery($this->whereEvaluation))
+            ->select('name')
+            ->from($data)
+            ->where('name', 'foo', 'like');
+        $result = $q->execute();
+
+        $this->assertCount(1, $result);
+        $this->assertEquals('foo', $result[0]['name']);
+    }
+
+    /**
+     * @covers Braincrafted\ArrayQuery\ArrayQuery::select()
+     * @covers Braincrafted\ArrayQuery\ArrayQuery::from()
+     * @covers Braincrafted\ArrayQuery\ArrayQuery::execute()
+     * @covers Braincrafted\ArrayQuery\ArrayQuery::where()
+     * @covers Braincrafted\ArrayQuery\ArrayQuery::evaluateWhere()
+     */
+    public function testExecuteFilter()
+    {
+        $this->whereEvaluation
+            ->shouldReceive('evaluate')
+            ->with([ 'name' => 'foo' ], [ 'name', 'foo', 'like', 'lower' ])
+            ->once()
+            ->andReturn(true);
+
+        $data = [ [ 'name' => 'foo' ] ];
+        $q = (new ArrayQuery($this->whereEvaluation))
+            ->select('name')
+            ->from($data)
+            ->where('name', 'foo', 'like', 'lower');
         $result = $q->execute();
 
         $this->assertCount(1, $result);

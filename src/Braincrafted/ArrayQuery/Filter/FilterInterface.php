@@ -9,34 +9,32 @@
  * file that was distributed with this source code.
  */
 
-namespace Braincrafted\ArrayQuery\Operator;
+namespace Braincrafted\ArrayQuery\Filter;
 
 /**
- * NotLikeOperator
+ * FilterInterface
  *
  * @package    braincrafted/arrayquery
- * @subpackage Operator
+ * @subpackage Filter
  * @author     Florian Eckerstorfer <florian@eckerstorfer.co>
  * @copyright  2013 Florian Eckerstorfer
  * @license    http://opensource.org/licenses/MIT The MIT License
  */
-class NotLikeOperator implements OperatorInterface
+interface FilterInterface
 {
     /**
-     * {@inheritDoc}
+     * Returns the name of the function.
+     *
+     * @return string
      */
-    public function getOperator()
-    {
-        return 'notlike';
-    }
+    public function getName();
 
     /**
-     * {@inheritDoc}
+     * Evalutes the function and returns the value.
+     *
+     * @param mixed $value
+     *
+     * @return mixed
      */
-    public function evaluate($value, $matchValue)
-    {
-        $pattern = sprintf('/^%s$/i', preg_replace('/(^%)|(%$)/', '.*', $matchValue));
-
-        return 1 !== preg_match($pattern, $value);
-    }
+    public function evaluate($value);
 }

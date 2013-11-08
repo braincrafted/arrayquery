@@ -9,34 +9,32 @@
  * file that was distributed with this source code.
  */
 
-namespace Braincrafted\ArrayQuery\Operator;
+namespace Braincrafted\ArrayQuery\Filter;
 
 /**
- * NotLikeOperator
+ * LowercaseFilter
  *
  * @package    braincrafted/arrayquery
- * @subpackage Operator
+ * @subpackage Filter
  * @author     Florian Eckerstorfer <florian@eckerstorfer.co>
  * @copyright  2013 Florian Eckerstorfer
  * @license    http://opensource.org/licenses/MIT The MIT License
  */
-class NotLikeOperator implements OperatorInterface
+class LowercaseFilter implements FilterInterface
 {
     /**
      * {@inheritDoc}
      */
-    public function getOperator()
+    public function getName()
     {
-        return 'notlike';
+        return 'lower';
     }
 
     /**
      * {@inheritDoc}
      */
-    public function evaluate($value, $matchValue)
+    public function evaluate($value)
     {
-        $pattern = sprintf('/^%s$/i', preg_replace('/(^%)|(%$)/', '.*', $matchValue));
-
-        return 1 !== preg_match($pattern, $value);
+        return mb_strtolower($value);
     }
 }

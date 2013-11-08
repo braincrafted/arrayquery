@@ -41,6 +41,9 @@ class QueryBuilder
         foreach (self::getDefaultOperators() as $operator) {
             $whereEvaluation->addOperator($operator);
         }
+        foreach (self::getDefaultFilters() as $filter) {
+            $whereEvaluation->addFilter($filter);
+        }
 
         $this->whereEvaluation = $whereEvaluation;
     }
@@ -69,6 +72,21 @@ class QueryBuilder
             new Operator\LowerOrEqualOperator,
             new Operator\NotEqualOperator,
             new Operator\NotLikeOperator
+        ];
+    }
+
+    /**
+     * @return array
+     *
+     * @codeCoverageIgnore
+     */
+    public static function getDefaultFilters()
+    {
+        return [
+            new Filter\LengthFilter,
+            new Filter\LowercaseFilter,
+            new Filter\UppercaseFilter,
+            new Filter\TrimFilter
         ];
     }
 }

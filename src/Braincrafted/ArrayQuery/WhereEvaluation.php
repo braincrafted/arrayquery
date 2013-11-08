@@ -13,6 +13,7 @@ namespace Braincrafted\ArrayQuery;
 
 use Braincrafted\ArrayQuery\Exception\UnkownOperatorException;
 use Braincrafted\ArrayQuery\Operator\OperatorInterface;
+use Braincrafted\ArrayQuery\Filter\FilterInterface;
 
 /**
  * WhereEvaluation
@@ -27,6 +28,9 @@ class WhereEvaluation
     /** @var array */
     private $operators = [];
 
+    /** @var array */
+    private $filters = [];
+
     /**
      * @param OperatorInterface $operator
      *
@@ -40,6 +44,18 @@ class WhereEvaluation
     }
 
     /**
+     * @param FilterInterface $filter
+     *
+     * @return WhereEvaluation
+     */
+    public function addFilter(FilterInterface $filter)
+    {
+        $this->filters[$filter->getName()] = $filter;
+
+        return $this;
+    }
+
+    /**
      * @param array $row
      * @param array $clause
      *
@@ -48,6 +64,7 @@ class WhereEvaluation
     public function evaluate(array $row, array $clause)
     {
         $value = isset($row[$clause[0]]) ? $row[$clause[0]] : null;
+        $value = $this->evaluateFilter($value, $clause);
 
         if (false === isset($this->operators[$clause[2]])) {
             throw new UnkownOperatorException(sprintf('The operator "%s" does not exist.', $clause[2]));
@@ -57,5 +74,25 @@ class WhereEvaluation
         }
 
         return true;
+    }
+
+    /**
+     * @param mixed $value
+     * @param array $clause
+     *
+     * @return mixed
+     */
+    protected function evaluateFilter($value, array $clause)
+    {
+        if (true === isset($clause[3])) {
+            if (false === is_array($clause[3])) {
+                $clause[3] = [ $clause[3] ];
+            }
+            foreach ($clause[3] as $filter) {
+                $value = $this->filters[$filter]->evaluate($value);
+            }
+        }
+
+        return $value;
     }
 }

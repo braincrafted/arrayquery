@@ -76,9 +76,9 @@ class ArrayQuery
      *
      * @return ArrayQuery
      */
-    public function where($key, $value, $operator = '=')
+    public function where($key, $value, $operator = '=', $filters = array())
     {
-        $this->where[] = [ $key, $value, $operator ];
+        $this->where[] = [ $key, $value, $operator, $filters ];
 
         return $this;
     }

@@ -43,10 +43,11 @@ class QueryBuilderTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers Braincrafted\ArrayQuery\QueryBuilder::__construct()
      */
-    public function testConstructDefaultOperators()
+    public function testConstructDefaultOperatorsDefaultFilters()
     {
         $whereEval = m::mock('Braincrafted\ArrayQuery\WhereEvaluation');
         $whereEval->shouldReceive('addOperator')->times(8);
+        $whereEval->shouldReceive('addFilter')->times(4);
 
         $qb = new QueryBuilder($whereEval);
     }

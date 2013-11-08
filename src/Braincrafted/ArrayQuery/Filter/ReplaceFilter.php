@@ -12,7 +12,7 @@
 namespace Braincrafted\ArrayQuery\Filter;
 
 /**
- * TrimFilter
+ * ReplaceFilter
  *
  * @package    braincrafted/arrayquery
  * @subpackage Filter
@@ -20,14 +20,14 @@ namespace Braincrafted\ArrayQuery\Filter;
  * @copyright  2013 Florian Eckerstorfer
  * @license    http://opensource.org/licenses/MIT The MIT License
  */
-class TrimFilter implements FilterInterface
+class ReplaceFilter implements FilterInterface
 {
     /**
      * {@inheritDoc}
      */
     public function getName()
     {
-        return 'trim';
+        return 'replace';
     }
 
     /**
@@ -35,6 +35,10 @@ class TrimFilter implements FilterInterface
      */
     public function evaluate($value, array $args = array())
     {
-        return trim($value);
+        if (false === isset($args[0]) || false === isset($args[1])) {
+            throw new \InvalidArgumentException('replace requires two arguments');
+        }
+
+        return str_replace($args[0], $args[1], $value);
     }
 }

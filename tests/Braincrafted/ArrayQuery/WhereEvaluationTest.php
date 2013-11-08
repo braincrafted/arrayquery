@@ -41,6 +41,16 @@ class WhereEvaluationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers Braincrafted\ArrayQuery\WhereEvaluation::evaluate()
+     * @covers Braincrafted\ArrayQuery\WhereEvaluation::evaluateFilter()
+     * @expectedException Braincrafted\ArrayQuery\Exception\UnkownFilterException
+     */
+    public function testEvaluateUnkownFilter()
+    {
+        $this->where->evaluate([ 'a' => 'x' ], [ 'a', 'x', '.', 'unkown' ]);
+    }
+
+    /**
      * @covers Braincrafted\ArrayQuery\WhereEvaluation::addOperator()
      * @covers Braincrafted\ArrayQuery\WhereEvaluation::evaluate()
      */
@@ -82,9 +92,29 @@ class WhereEvaluationTest extends \PHPUnit_Framework_TestCase
 
         $filter = m::mock('Braincrafted\ArrayQuery\Filter\FilterInterface');
         $filter->shouldReceive('getName')->andReturn('test');
-        $filter->shouldReceive('evaluate')->with('x')->andReturn('y');
+        $filter->shouldReceive('evaluate')->with('x', [])->andReturn('y');
         $this->where->addFilter($filter);
 
         $this->assertTrue($this->where->evaluate([ 'a' => 'x' ], [ 'a', 'x', '.', 'test' ]));
+    }
+
+    /**
+     * @covers Braincrafted\ArrayQuery\WhereEvaluation::addFilter()
+     * @covers Braincrafted\ArrayQuery\WhereEvaluation::evaluate()
+     * @covers Braincrafted\ArrayQuery\WhereEvaluation::evaluateFilter()
+     */
+    public function testEvaluateFilterWithArgs()
+    {
+        $operator = m::mock('Braincrafted\ArrayQuery\Operator\OperatorInterface');
+        $operator->shouldReceive('getOperator')->andReturn('.');
+        $operator->shouldReceive('evaluate')->with('y', 'x')->andReturn(true);
+        $this->where->addOperator($operator);
+
+        $filter = m::mock('Braincrafted\ArrayQuery\Filter\FilterInterface');
+        $filter->shouldReceive('getName')->andReturn('test');
+        $filter->shouldReceive('evaluate')->with('x', [ 'a' ])->andReturn('y');
+        $this->where->addFilter($filter);
+
+        $this->assertTrue($this->where->evaluate([ 'a' => 'x' ], [ 'a', 'x', '.', 'test a' ]));
     }
 }

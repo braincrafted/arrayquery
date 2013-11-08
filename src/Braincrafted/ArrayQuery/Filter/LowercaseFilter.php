@@ -33,7 +33,7 @@ class LowercaseFilter implements FilterInterface
     /**
      * {@inheritDoc}
      */
-    public function evaluate($value)
+    public function evaluate($value, array $args = array())
     {
         return mb_strtolower($value);
     }

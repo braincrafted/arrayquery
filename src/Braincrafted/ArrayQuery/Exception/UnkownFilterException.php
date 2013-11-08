@@ -9,32 +9,17 @@
  * file that was distributed with this source code.
  */
 
-namespace Braincrafted\ArrayQuery\Filter;
+namespace Braincrafted\ArrayQuery\Exception;
 
 /**
- * TrimFilter
+ * UnkownFilterException
  *
  * @package    braincrafted/arrayquery
- * @subpackage Filter
+ * @subpackage Exception
  * @author     Florian Eckerstorfer <florian@eckerstorfer.co>
  * @copyright  2013 Florian Eckerstorfer
  * @license    http://opensource.org/licenses/MIT The MIT License
  */
-class TrimFilter implements FilterInterface
+class UnkownFilterException extends \Exception
 {
-    /**
-     * {@inheritDoc}
-     */
-    public function getName()
-    {
-        return 'trim';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function evaluate($value, array $args = array())
-    {
-        return trim($value);
-    }
 }

@@ -11,6 +11,7 @@
 
 namespace Braincrafted\ArrayQuery;
 
+use Braincrafted\ArrayQuery\Exception\UnkownFilterException;
 use Braincrafted\ArrayQuery\Exception\UnkownOperatorException;
 use Braincrafted\ArrayQuery\Operator\OperatorInterface;
 use Braincrafted\ArrayQuery\Filter\FilterInterface;
@@ -89,7 +90,20 @@ class WhereEvaluation
                 $clause[3] = [ $clause[3] ];
             }
             foreach ($clause[3] as $filter) {
-                $value = $this->filters[$filter]->evaluate($value);
+                $filter = explode(' ', $filter, 2);
+                if (1 === count($filter)) {
+                    $args   = [];
+                    $filter = $filter[0];
+                } else {
+                    $args   = array_map('trim', explode(',', $filter[1]));
+                    $filter = $filter[0];
+                }
+
+                if (false === isset($this->filters[$filter])) {
+                    throw new UnkownFilterException(sprintf('The filter "%s" does not exist.', $filter));
+                }
+
+                $value = $this->filters[$filter]->evaluate($value, $args);
             }
         }
 

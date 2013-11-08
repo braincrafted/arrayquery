@@ -12,7 +12,7 @@
 namespace Braincrafted\ArrayQuery\Filter;
 
 /**
- * TrimFilter
+ * RightTrimFilter
  *
  * @package    braincrafted/arrayquery
  * @subpackage Filter
@@ -20,14 +20,14 @@ namespace Braincrafted\ArrayQuery\Filter;
  * @copyright  2013 Florian Eckerstorfer
  * @license    http://opensource.org/licenses/MIT The MIT License
  */
-class TrimFilter implements FilterInterface
+class RightTrimFilter implements FilterInterface
 {
     /**
      * {@inheritDoc}
      */
     public function getName()
     {
-        return 'trim';
+        return 'rtrim';
     }
 
     /**
@@ -35,6 +35,6 @@ class TrimFilter implements FilterInterface
      */
     public function evaluate($value, array $args = array())
     {
-        return trim($value);
+        return rtrim($value);
     }
 }

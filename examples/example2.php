@@ -8,7 +8,8 @@ $users = [
     [ 'name' => '  haXor' ],
     [ 'name' => '1337PWNR' ],
     [ 'name' => '     LOL  '],
-    [ 'name' => 'N0b' ]
+    [ 'name' => 'N0b' ],
+    [ 'name' => 'n3rd' ]
 ];
 
 $qb = new QueryBuilder();
@@ -27,6 +28,15 @@ $query = $qb->create()
     ->select('name')
     ->from($users)
     ->where('name', 3, '=', [ 'trim', 'length' ]);
+$result = $query->execute();
+
+print_r($result);
+
+// Get all users with name nerd (replace the letter 3 in the name through e)
+$query = $qb->create()
+    ->select('name')
+    ->from($users)
+    ->where('name', 'nerd', '=', [ 'replace 3,e' ]);
 $result = $query->execute();
 
 print_r($result);

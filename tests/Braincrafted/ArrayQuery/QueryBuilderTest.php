@@ -47,7 +47,7 @@ class QueryBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $whereEval = m::mock('Braincrafted\ArrayQuery\WhereEvaluation');
         $whereEval->shouldReceive('addOperator')->times(8);
-        $whereEval->shouldReceive('addFilter')->times(4);
+        $whereEval->shouldReceive('addFilter')->times(7);
 
         $qb = new QueryBuilder($whereEval);
     }

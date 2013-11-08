@@ -33,8 +33,9 @@ interface FilterInterface
      * Evalutes the function and returns the value.
      *
      * @param mixed $value
+     * @param array $args
      *
      * @return mixed
      */
-    public function evaluate($value);
+    public function evaluate($value, array $args = array());
 }

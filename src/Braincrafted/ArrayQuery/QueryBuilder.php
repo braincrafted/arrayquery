@@ -83,9 +83,12 @@ class QueryBuilder
     public static function getDefaultFilters()
     {
         return [
+            new Filter\LeftTrimFilter,
             new Filter\LengthFilter,
             new Filter\LowercaseFilter,
             new Filter\UppercaseFilter,
+            new Filter\ReplaceFilter,
+            new Filter\RightTrimFilter,
             new Filter\TrimFilter
         ];
     }

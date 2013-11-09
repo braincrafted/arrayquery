@@ -1,0 +1,13 @@
+language: php
+
+php:
+  - 5.4
+  - 5.5
+
+before_script:
+  - wget http://getcomposer.org/composer.phar
+  - php composer.phar --prefer-source --dev install
+  - cp phpunit.xml.dist phpunit.xml
+
+script:
+  - phpunit

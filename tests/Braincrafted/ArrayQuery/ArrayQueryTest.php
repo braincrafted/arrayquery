@@ -65,12 +65,12 @@ class ArrayQueryTest extends \PHPUnit_Framework_TestCase
     {
         $this->whereEvaluation
             ->shouldReceive('evaluate')
-            ->with([ 'name' => 'foo' ], [ 'name', 'foo', '=', [] ])
+            ->with([ 'name' => 'foo' ], [ 'key' => 'name', 'value' => 'foo', 'operator' => '=', 'filters' => [] ])
             ->once()
             ->andReturn(true);
         $this->whereEvaluation
             ->shouldReceive('evaluate')
-            ->with([ 'name' => 'bar' ], [ 'name', 'foo', '=', [] ])
+            ->with([ 'name' => 'bar' ], [ 'key' => 'name', 'value' => 'foo', 'operator' => '=', 'filters' => [] ])
             ->once()
             ->andReturn(false);
 
@@ -96,7 +96,7 @@ class ArrayQueryTest extends \PHPUnit_Framework_TestCase
     {
         $this->whereEvaluation
             ->shouldReceive('evaluate')
-            ->with([ 'name' => 'foo' ], [ 'name', 'foo', 'like', [] ])
+            ->with([ 'name' => 'foo' ], [ 'key' => 'name', 'value' => 'foo', 'operator' => 'like', 'filters' => [] ])
             ->once()
             ->andReturn(true);
 
@@ -122,7 +122,10 @@ class ArrayQueryTest extends \PHPUnit_Framework_TestCase
     {
         $this->whereEvaluation
             ->shouldReceive('evaluate')
-            ->with([ 'name' => 'foo' ], [ 'name', 'foo', 'like', 'lower' ])
+            ->with(
+                [ 'name' => 'foo' ],
+                [ 'key' => 'name', 'value' => 'foo', 'operator' => 'like', 'filters' => 'lower' ]
+            )
             ->once()
             ->andReturn(true);
 

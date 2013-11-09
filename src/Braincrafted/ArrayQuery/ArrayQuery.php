@@ -46,6 +46,18 @@ class ArrayQuery
     /**
      * The names of the fields that should be selected by the query.
      *
+     * Example 1: **One field**
+     *
+     * `$query->select('name');`
+     *
+     * Example 2: **Two fields as two parameters**
+     *
+     * `$query->select('name', 'age');`
+     *
+     * Example 3: **Two fields as array**
+     *
+     * `$query->select([ 'name', 'age' ]);`
+     *
      * @param mixed $select Either an array of field names or each field name as parameter
      *
      * @return ArrayQuery
@@ -75,7 +87,19 @@ class ArrayQuery
     }
 
     /**
-     * A clause that elements have to match to be returned.
+     * Add a clause that elements have to match to be returned.
+     *
+     * Example 1: **Simple where**
+     *
+     * `$select->where('name', 'Bilbo Baggings');`
+     *
+     * Example 2: **Different operator**
+     *
+     * `$select->where('age', 50, '>=');`
+     *
+     * Example 3: **Add filters**
+     *
+     * `$select->where('name', 5, '=', [ 'trim', 'count' ]);`
      *
      * @param mixed $key       Key of the element to evaluate
      * @param mixed $value     Value the evaluated element has to match (occording to the operator)
@@ -86,13 +110,18 @@ class ArrayQuery
      */
     public function where($key, $value, $operator = '=', $filters = array())
     {
-        $this->where[] = [ $key, $value, $operator, $filters ];
+        $this->where[] = [
+            'key'      => $key,
+            'value'    => $value,
+            'operator' => $operator,
+            'filters'  => $filters
+        ];
 
         return $this;
     }
 
     /**
-     * Executes the query.
+     * Executes the query and returns the result.
      *
      * @return array Array of elements that match the query
      */
@@ -118,16 +147,18 @@ class ArrayQuery
     }
 
     /**
-     * @param array $row
+     * Evaluates the where clauses on the given item.
      *
-     * @return boolean
+     * @param array $item The item to evaluate
+     *
+     * @return boolean `true` if all where clauses evaluate to `true`, `false` otherwise
      */
-    protected function evaluateWhere(array $row)
+    protected function evaluateWhere(array $item)
     {
         $result = true;
 
         foreach ($this->where as $clause) {
-            $result = $result && $this->whereEvaluation->evaluate($row, $clause);
+            $result = $result && $this->whereEvaluation->evaluate($item, $clause);
         }
 
         return $result;

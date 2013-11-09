@@ -19,6 +19,8 @@ use Braincrafted\ArrayQuery\Filter\FilterInterface;
 /**
  * WhereEvaluation
  *
+ * Evaluates values against where clauses with the given set of operators and filters.
+ *
  * @package   braincrafted/arrayquery
  * @author    Florian Eckerstorfer <florian@eckerstorfer.co>
  * @copyright 2013 Florian Eckerstorfer
@@ -33,7 +35,9 @@ class WhereEvaluation
     private $filters = [];
 
     /**
-     * @param OperatorInterface $operator
+     * Adds an operator to the evaluation.
+     *
+     * @param OperatorInterface $operator The operator.
      *
      * @return WhereEvaluation
      */
@@ -45,7 +49,9 @@ class WhereEvaluation
     }
 
     /**
-     * @param FilterInterface $filter
+     * Adds a filter to the evaluation.
+     *
+     * @param FilterInterface $filter The filter.
      *
      * @return WhereEvaluation
      */
@@ -57,20 +63,35 @@ class WhereEvaluation
     }
 
     /**
-     * @param array $row
-     * @param array $clause
+     * Evaluates the given item with the given clause.
      *
-     * @return boolean
+     * @param array $item   The item to evaluate.
+     * @param array $clause The clause to evaluate the item with. Has to contain `key`, `value` and `operator` and can
+     *                      optionally also contain `filters`. `filters` can be either a string or an array.
+     *
+     * @return boolean `true` if the item evaluates to `true`, `false` otherwise.
+     *
+     * @throws \InvalidArgumentException if `key`, `value` or `operator` is missing in `$clause`.
+     * @throws Braincrafted\ArrayQuery\Exception\UnkownFilterException if a filter does not exist.
+     * @throws Braincrafted\ArrayQuery\Exception\UnkownOperatorException if the operator does not exist.
      */
-    public function evaluate(array $row, array $clause)
+    public function evaluate(array $item, array $clause)
     {
-        $value = isset($row[$clause[0]]) ? $row[$clause[0]] : null;
+        if (false === isset($clause['key']) ||
+            false === isset($clause['value']) ||
+            false === isset($clause['operator'])
+        ) {
+            throw new \InvalidArgumentException('Clause must contain "key", "value" and operator.');
+        }
+
+        $value = isset($item[$clause['key']]) ? $item[$clause['key']] : null;
         $value = $this->evaluateFilter($value, $clause);
 
-        if (false === isset($this->operators[$clause[2]])) {
-            throw new UnkownOperatorException(sprintf('The operator "%s" does not exist.', $clause[2]));
+        if (false === isset($this->operators[$clause['operator']])) {
+            throw new UnkownOperatorException(sprintf('The operator "%s" does not exist.', $clause['operator']));
         }
-        if (false === $this->operators[$clause[2]]->evaluate($value, $clause[1])) {
+
+        if (false === $this->operators[$clause['operator']]->evaluate($value, $clause['value'])) {
             return false;
         }
 
@@ -78,18 +99,24 @@ class WhereEvaluation
     }
 
     /**
-     * @param mixed $value
-     * @param array $clause
+     * Evaluates the given value with the given clause.
      *
-     * @return mixed
+     * @param mixed $value  The value to evaluate.
+     * @param array $clause The clause to evaluate the item with.
+     *
+     * @return mixed The evaluated value.
+     *
+     * @throws Braincrafted\ArrayQuery\Exception\UnkownFilterException if the given filter does not exist.
+     *
+     * @see evaluate()
      */
     protected function evaluateFilter($value, array $clause)
     {
-        if (true === isset($clause[3])) {
-            if (false === is_array($clause[3])) {
-                $clause[3] = [ $clause[3] ];
+        if (true === isset($clause['filters'])) {
+            if (false === is_array($clause['filters'])) {
+                $clause['filters'] = [ $clause['filters'] ];
             }
-            foreach ($clause[3] as $filter) {
+            foreach ($clause['filters'] as $filter) {
                 $filter = explode(' ', $filter, 2);
                 if (1 === count($filter)) {
                     $args   = [];

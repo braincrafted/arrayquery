@@ -26,9 +26,39 @@ use Braincrafted\ArrayQuery\WhereEvaluation;
  */
 class WhereEvaluationTest extends \PHPUnit_Framework_TestCase
 {
+    /** @var WhereEvaluation */
+    private $where;
+
     public function setUp()
     {
         $this->where = new WhereEvaluation;
+    }
+
+    /**
+     * @covers Braincrafted\ArrayQuery\WhereEvaluation::evaluate()
+     * @expectedException \InvalidArgumentException
+     */
+    public function testEvaluateMissingKey()
+    {
+        $this->where->evaluate([ 'a' => 'x' ], [ 'value' => 'x', 'operator' => '=' ]);
+    }
+
+    /**
+     * @covers Braincrafted\ArrayQuery\WhereEvaluation::evaluate()
+     * @expectedException \InvalidArgumentException
+     */
+    public function testEvaluateMissingValue()
+    {
+        $this->where->evaluate([ 'a' => 'x' ], [ 'key' => 'x', 'operator' => '=' ]);
+    }
+
+    /**
+     * @covers Braincrafted\ArrayQuery\WhereEvaluation::evaluate()
+     * @expectedException \InvalidArgumentException
+     */
+    public function testEvaluateMissingOperator()
+    {
+        $this->where->evaluate([ 'a' => 'x' ], [ 'key' => 'x', 'value' => 'y' ]);
     }
 
     /**
@@ -37,7 +67,7 @@ class WhereEvaluationTest extends \PHPUnit_Framework_TestCase
      */
     public function testEvaluateUnkownOperator()
     {
-        $this->where->evaluate([ 'a' => 'x' ], [ 'a', 'x', 'invalid' ]);
+        $this->where->evaluate([ 'a' => 'x' ], [ 'key' => 'a', 'value' => 'x', 'operator' => 'invalid' ]);
     }
 
     /**
@@ -47,7 +77,10 @@ class WhereEvaluationTest extends \PHPUnit_Framework_TestCase
      */
     public function testEvaluateUnkownFilter()
     {
-        $this->where->evaluate([ 'a' => 'x' ], [ 'a', 'x', '.', 'unkown' ]);
+        $this->where->evaluate(
+            [ 'a' => 'x' ],
+            [ 'key' => 'a', 'value' => 'x', 'operator' => '.', 'filters' => 'unkown' ]
+        );
     }
 
     /**
@@ -61,7 +94,7 @@ class WhereEvaluationTest extends \PHPUnit_Framework_TestCase
         $operator->shouldReceive('evaluate')->with('x', 'x')->andReturn(true);
         $this->where->addOperator($operator);
 
-        $this->assertTrue($this->where->evaluate([ 'a' => 'x' ], [ 'a', 'x', '.' ]));
+        $this->assertTrue($this->where->evaluate([ 'a' => 'x' ], [ 'key' => 'a', 'value' => 'x', 'operator' => '.' ]));
     }
 
     /**
@@ -75,7 +108,7 @@ class WhereEvaluationTest extends \PHPUnit_Framework_TestCase
         $operator->shouldReceive('evaluate')->with('x', 'y')->andReturn(false);
         $this->where->addOperator($operator);
 
-        $this->assertFalse($this->where->evaluate([ 'a' => 'x' ], [ 'a', 'y', '.' ]));
+        $this->assertFalse($this->where->evaluate([ 'a' => 'x' ], [ 'key' => 'a', 'value' => 'y', 'operator' => '.' ]));
     }
 
     /**
@@ -95,7 +128,12 @@ class WhereEvaluationTest extends \PHPUnit_Framework_TestCase
         $filter->shouldReceive('evaluate')->with('x', [])->andReturn('y');
         $this->where->addFilter($filter);
 
-        $this->assertTrue($this->where->evaluate([ 'a' => 'x' ], [ 'a', 'x', '.', 'test' ]));
+        $this->assertTrue(
+            $this->where->evaluate(
+                [ 'a' => 'x' ],
+                [ 'key' => 'a', 'value' => 'x', 'operator' => '.', 'filters' => 'test' ]
+            )
+        );
     }
 
     /**
@@ -115,6 +153,11 @@ class WhereEvaluationTest extends \PHPUnit_Framework_TestCase
         $filter->shouldReceive('evaluate')->with('x', [ 'a' ])->andReturn('y');
         $this->where->addFilter($filter);
 
-        $this->assertTrue($this->where->evaluate([ 'a' => 'x' ], [ 'a', 'x', '.', 'test a' ]));
+        $this->assertTrue(
+            $this->where->evaluate(
+                [ 'a' => 'x' ],
+                [ 'key' => 'a', 'value' => 'x', 'operator' => '.', 'filters' => 'test a' ]
+            )
+        );
     }
 }

@@ -34,11 +34,11 @@ class EqualOperatorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Braincrafted\ArrayQuery\Operator\EqualOperator::getOperator()
+     * @covers Braincrafted\ArrayQuery\Operator\EqualOperator::getName()
      */
-    public function testGetOperator()
+    public function testGetName()
     {
-        $this->assertEquals('=', $this->operator->getOperator());
+        $this->assertEquals('=', $this->operator->getName());
     }
 
     /**

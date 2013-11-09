@@ -34,11 +34,11 @@ class NotLikeOperatorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Braincrafted\ArrayQuery\Operator\NotLikeOperator::getOperator()
+     * @covers Braincrafted\ArrayQuery\Operator\NotLikeOperator::getName()
      */
-    public function testGetOperator()
+    public function testGetName()
     {
-        $this->assertEquals('notlike', $this->operator->getOperator());
+        $this->assertEquals('notlike', $this->operator->getName());
     }
 
     /**

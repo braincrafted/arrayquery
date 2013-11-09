@@ -34,11 +34,11 @@ class LowerOrEqualOperatorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Braincrafted\ArrayQuery\Operator\LowerOrEqualOperator::getOperator()
+     * @covers Braincrafted\ArrayQuery\Operator\LowerOrEqualOperator::getName()
      */
-    public function testGetOperator()
+    public function testGetName()
     {
-        $this->assertEquals('<=', $this->operator->getOperator());
+        $this->assertEquals('<=', $this->operator->getName());
     }
 
     /**

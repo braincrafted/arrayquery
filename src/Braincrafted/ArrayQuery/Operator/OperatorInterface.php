@@ -24,11 +24,11 @@ namespace Braincrafted\ArrayQuery\Operator;
 interface OperatorInterface
 {
     /**
-     * Returns the operator.
+     * Returns the name of the operator.
      *
      * @return string
      */
-    public function getOperator();
+    public function getName();
 
     /**
      * Returns if the operator evalutes to true.

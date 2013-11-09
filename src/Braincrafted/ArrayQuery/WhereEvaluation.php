@@ -43,7 +43,7 @@ class WhereEvaluation
      */
     public function addOperator(OperatorInterface $operator)
     {
-        $this->operators[$operator->getOperator()] = $operator;
+        $this->operators[$operator->getName()] = $operator;
 
         return $this;
     }

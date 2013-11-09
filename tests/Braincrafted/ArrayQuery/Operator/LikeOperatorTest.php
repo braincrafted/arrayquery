@@ -34,11 +34,11 @@ class LikeOperatorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Braincrafted\ArrayQuery\Operator\LikeOperator::getOperator()
+     * @covers Braincrafted\ArrayQuery\Operator\LikeOperator::getName()
      */
-    public function testGetOperator()
+    public function testGetName()
     {
-        $this->assertEquals('like', $this->operator->getOperator());
+        $this->assertEquals('like', $this->operator->getName());
     }
 
     /**

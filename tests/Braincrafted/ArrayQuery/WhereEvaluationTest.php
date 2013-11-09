@@ -90,7 +90,7 @@ class WhereEvaluationTest extends \PHPUnit_Framework_TestCase
     public function testEvaluateTrue()
     {
         $operator = m::mock('Braincrafted\ArrayQuery\Operator\OperatorInterface');
-        $operator->shouldReceive('getOperator')->andReturn('.');
+        $operator->shouldReceive('getName')->andReturn('.');
         $operator->shouldReceive('evaluate')->with('x', 'x')->andReturn(true);
         $this->where->addOperator($operator);
 
@@ -104,7 +104,7 @@ class WhereEvaluationTest extends \PHPUnit_Framework_TestCase
     public function testEvaluateFalse()
     {
         $operator = m::mock('Braincrafted\ArrayQuery\Operator\OperatorInterface');
-        $operator->shouldReceive('getOperator')->andReturn('.');
+        $operator->shouldReceive('getName')->andReturn('.');
         $operator->shouldReceive('evaluate')->with('x', 'y')->andReturn(false);
         $this->where->addOperator($operator);
 
@@ -119,7 +119,7 @@ class WhereEvaluationTest extends \PHPUnit_Framework_TestCase
     public function testEvaluateFilter()
     {
         $operator = m::mock('Braincrafted\ArrayQuery\Operator\OperatorInterface');
-        $operator->shouldReceive('getOperator')->andReturn('.');
+        $operator->shouldReceive('getName')->andReturn('.');
         $operator->shouldReceive('evaluate')->with('y', 'x')->andReturn(true);
         $this->where->addOperator($operator);
 
@@ -144,7 +144,7 @@ class WhereEvaluationTest extends \PHPUnit_Framework_TestCase
     public function testEvaluateFilterWithArgs()
     {
         $operator = m::mock('Braincrafted\ArrayQuery\Operator\OperatorInterface');
-        $operator->shouldReceive('getOperator')->andReturn('.');
+        $operator->shouldReceive('getName')->andReturn('.');
         $operator->shouldReceive('evaluate')->with('y', 'x')->andReturn(true);
         $this->where->addOperator($operator);
 

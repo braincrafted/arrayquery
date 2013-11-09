@@ -25,7 +25,7 @@ class GreaterOrEqualOperator implements OperatorInterface
     /**
      * {@inheritDoc}
      */
-    public function getOperator()
+    public function getName()
     {
         return '>=';
     }

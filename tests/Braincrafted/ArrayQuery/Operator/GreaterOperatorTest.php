@@ -34,11 +34,11 @@ class GreaterOperatorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Braincrafted\ArrayQuery\Operator\GreaterOperator::getOperator()
+     * @covers Braincrafted\ArrayQuery\Operator\GreaterOperator::getName()
      */
-    public function testGetOperator()
+    public function testGetName()
     {
-        $this->assertEquals('>', $this->operator->getOperator());
+        $this->assertEquals('>', $this->operator->getName());
     }
 
     /**

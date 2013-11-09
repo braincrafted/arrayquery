@@ -44,7 +44,9 @@ class ArrayQuery
     }
 
     /**
-     * @param mixed $select
+     * The names of the fields that should be selected by the query.
+     *
+     * @param mixed $select Either an array of field names or each field name as parameter
      *
      * @return ArrayQuery
      */
@@ -59,7 +61,9 @@ class ArrayQuery
     }
 
     /**
-     * @param array $from
+     * The data source of the query.
+     *
+     * @param array $from Array to query elements from
      *
      * @return ArrayQuery
      */
@@ -71,8 +75,12 @@ class ArrayQuery
     }
 
     /**
-     * @param mixed $key
-     * @param mixed $value
+     * A clause that elements have to match to be returned.
+     *
+     * @param mixed $key       Key of the element to evaluate
+     * @param mixed $value     Value the evaluated element has to match (occording to the operator)
+     * @param string $operator Operator used for the evluation
+     * @param array  $filters  Array of filters to be applied to a value before it is evaluated
      *
      * @return ArrayQuery
      */
@@ -86,7 +94,7 @@ class ArrayQuery
     /**
      * Executes the query.
      *
-     * @return array
+     * @return array Array of elements that match the query
      */
     public function execute()
     {

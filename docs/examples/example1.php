@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__.'/../vendor/autoload.php';
+require_once __DIR__.'/../../vendor/autoload.php';
 
 use Braincrafted\ArrayQuery\QueryBuilder;
 
@@ -28,6 +28,6 @@ $query = $qb->create()
     ->select('name')
     ->from($thorinsCompany)
     ->where('race', 'Dwarf');
-$result = $query->execute();
+$result = $query->findAll();
 
 print_r($result);

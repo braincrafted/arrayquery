@@ -35,9 +35,18 @@ class QueryBuilderTest extends \PHPUnit_Framework_TestCase
      * @covers Braincrafted\ArrayQuery\QueryBuilder::__construct()
      * @expectedException \InvalidArgumentException
      */
-    public function testConstructInvalidArgument()
+    public function testConstructInvalidSelectEval()
     {
         $qb = new QueryBuilder(new \stdClass);
+    }
+
+    /**
+     * @covers Braincrafted\ArrayQuery\QueryBuilder::__construct()
+     * @expectedException \InvalidArgumentException
+     */
+    public function testConstructInvalidWhereEval()
+    {
+        $qb = new QueryBuilder(m::mock('Braincrafted\ArrayQuery\SelectEvaluation'), new \stdClass);
     }
 
     /**
@@ -45,11 +54,14 @@ class QueryBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testConstructDefaultOperatorsDefaultFilters()
     {
+        $selectEval = m::mock('Braincrafted\ArrayQuery\SelectEvaluation');
+        $selectEval->shouldReceive('addFilter')->times(7);
+
         $whereEval = m::mock('Braincrafted\ArrayQuery\WhereEvaluation');
         $whereEval->shouldReceive('addOperator')->times(8);
         $whereEval->shouldReceive('addFilter')->times(7);
 
-        $qb = new QueryBuilder($whereEval);
+        $qb = new QueryBuilder($selectEval, $whereEval);
     }
 
     /**

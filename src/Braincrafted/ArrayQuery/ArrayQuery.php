@@ -21,6 +21,9 @@ namespace Braincrafted\ArrayQuery;
  */
 class ArrayQuery
 {
+    /** @var SelectEvaluation */
+    private $selectEvaluation;
+
     /** @var WhereEvaluation */
     private $whereEvaluation;
 
@@ -38,9 +41,10 @@ class ArrayQuery
      *
      * @codeCoverageIgnore
      */
-    public function __construct(WhereEvaluation $whereEvaluation)
+    public function __construct(SelectEvaluation $selectEvaluation, WhereEvaluation $whereEvaluation)
     {
-        $this->whereEvaluation = $whereEvaluation;
+        $this->selectEvaluation = $selectEvaluation;
+        $this->whereEvaluation  = $whereEvaluation;
     }
 
     /**
@@ -50,24 +54,37 @@ class ArrayQuery
      *
      * `$query->select('name');`
      *
-     * Example 2: **Two fields as two parameters**
+     * Example 2: **One field with filters**
      *
-     * `$query->select('name', 'age');`
+     * `$query->select('name', 'length')`
      *
      * Example 3: **Two fields as array**
      *
      * `$query->select([ 'name', 'age' ]);`
      *
+     * Example 4: **Two fields with filters**
+     *
+     * `$query->select([ 'name' => [ 'replace 3,e', 'trim' ], 'bio' => 'trim' ]);`
+     *
      * @param mixed $select Either an array of field names or each field name as parameter
      *
      * @return ArrayQuery
      */
-    public function select($select)
+    public function select($select, $filters = array())
     {
         if (false === is_array($select)) {
-            $select = func_get_args();
+            $newSelect = [ $select => $filters ];
+        } else {
+            $newSelect = [];
+            foreach ($select as $key => $filters) {
+                if (true === is_int($key) || '*' === $key) {
+                    $newSelect[$filters] = [];
+                } else {
+                    $newSelect[$key] = $filters;
+                }
+            }
         }
-        $this->select = $select;
+        $this->select = $newSelect;
 
         return $this;
     }
@@ -121,25 +138,83 @@ class ArrayQuery
     }
 
     /**
+     * Returns all items from the result.
+     *
+     * @return array The full result
+     */
+    public function findAll()
+    {
+        return $this->execute();
+    }
+
+    /**
+     * Returns one item of the array.
+     *
+     * @return array An item of the array
+     */
+    public function findOne()
+    {
+        return $this->execute(true);
+    }
+
+    /**
+     * Returns an array of scalar values.
+     *
+     * @return array An array of scalar values.
+     */
+    public function findScalar()
+    {
+        return $this->execute(false, true);
+    }
+
+    /**
+     * Returns a single scalar value.
+     *
+     * @return mixed A scalar value
+     */
+    public function findOneScalar()
+    {
+        return $this->execute(true, true);
+    }
+
+    /**
      * Executes the query and returns the result.
      *
      * @return array Array of elements that match the query
+     *
+     * @throws \InvalidArgumentException when `$scalar` is `true` and more than one field is selected.
      */
-    public function execute()
+    public function execute($one = false, $scalar = false)
     {
+        if (true === $scalar && (count($this->select) > 1 || true === isset($this->select['*']))) {
+            throw new \InvalidArgumentException('$scalar can only be true if only one field is selected.');
+        }
+
         $result = [];
 
-        $selectAll = in_array('*', $this->select);
+        $selectAll = isset($this->select['*']);
 
-        foreach ($this->from as $index => $row) {
-            if (true === $this->evaluateWhere($row)) {
-                $resultRow = [];
-                foreach ($row as $key => $value) {
-                    if (true === $selectAll || true === in_array($key, $this->select)) {
-                        $resultRow[$key] = $value;
+        foreach ($this->from as $index => $item) {
+            if (true === $this->evaluateWhere($item)) {
+                $resultItem = [];
+                foreach ($item as $key => $value) {
+                    if (true === $selectAll || true === isset($this->select[$key])) {
+                        if (true === isset($this->select[$key])) {
+                            $value = $this->selectEvaluation->evaluate($value, $this->select[$key]);
+                        }
+                        if (true === $scalar) {
+                            $resultItem = $value;
+                        } else {
+                            $resultItem[$key] = $value;
+                        }
                     }
                 }
-                $result[] = $resultRow;
+
+                if (true === $one) {
+                    return $resultItem;
+                }
+
+                $result[] = $resultItem;
             }
         }
 

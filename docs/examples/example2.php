@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__.'/../vendor/autoload.php';
+require_once __DIR__.'/../../vendor/autoload.php';
 
 use Braincrafted\ArrayQuery\QueryBuilder;
 
@@ -19,7 +19,7 @@ $query = $qb->create()
     ->select('name')
     ->from($users)
     ->where('name', 'lol', '=', [ 'trim', 'lower' ]);
-$result = $query->execute();
+$result = $query->findAll();
 
 print_r($result);
 
@@ -28,7 +28,7 @@ $query = $qb->create()
     ->select('name')
     ->from($users)
     ->where('name', 3, '=', [ 'trim', 'length' ]);
-$result = $query->execute();
+$result = $query->findAll();
 
 print_r($result);
 
@@ -37,6 +37,6 @@ $query = $qb->create()
     ->select('name')
     ->from($users)
     ->where('name', 'nerd', '=', [ 'replace 3,e' ]);
-$result = $query->execute();
+$result = $query->findAll();
 
 print_r($result);

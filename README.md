@@ -3,6 +3,27 @@ ArrayQuery
 
 ArrayQuery is a library to query arrays.
 
+    // Select the name of all of Ned's children older than 10.
+    $query = $qb->create()
+        ->select('name')
+        ->from([
+            [ 'name' => 'Robb',   'age' => 15 ],
+            [ 'name' => 'Sansa',  'age' => 11 ],
+            [ 'name' => 'Arya',   'age' => 9 ],
+            [ 'name' => 'Bran',   'age' => 7 ],
+            [ 'name' => 'Rickon', 'age' => 3 ]
+        ])
+        ->where('age', 10, '>');
+    $result = $query->findAll();
+
+
+Motivation
+----------
+
+Data is often stored in arrays or arrays (for example, after reading it from CSV) and some items (or rows) have to be
+picked out before the data can be further processed or stored in a database. Writing such code is not very hard, but
+it often gets messy. Loops within loops, multiple if or switch statement, temporary variables and so on. ArrayQuery
+provided a clean and testable interface (inspired by query builders from ORMs) for these "array queries."
 
 Installation
 ------------
@@ -19,21 +40,22 @@ ArrayQuery can be installed using Composer:
 Usage
 -----
 
-The `ArrayQuery` object has to be initialized with a `WhereEvaluation` object. By default, no operators and filters are
-registered there.
+The `ArrayQuery` object has to be initialized with a `SelectEvaluation` and a `WhereEvaluation` object. By default, no
+operators and filters are added.
 
     <?php
 
     use Braincrafted\ArrayQuery\ArrayQuery;
+    use Braincrafted\ArrayQuery\SelectEvaluation;
     use Braincrafted\ArrayQuery\WhereEvaluation;
     use Braincrafted\ArrayQuery\Operator\EqualOperator
 
     $query = new ArrayQuery(
+        new SelectEvaluation,
         (new WhereEvaluation)->addOperator(new EqualOperator)
     );
 
-However, you can also use the `QueryBuilder` to create an instance of `ArrayQuery` with default operators and filters
-added to it.
+However, the `QueryBuilder` can be used to create an instance of `ArrayQuery` with default operators and filters.
 
     <?php
 
@@ -42,17 +64,46 @@ added to it.
     $qb = new QueryBuilder;
     $query = $qb->create();
 
-You can use the query object to build queries and then execute them. Building the query object contains of three steps:
+The query object can be used to build queries and execute them. Building the query object contains of three steps:
 
-1. Select the fields to be returned
-2. Add the data source
-3. Add where clauses which restrict the returned items
+1. **Select** the fields to be returned
+2. **From** the datasource
+3. **Where** a clause is matched
 
-In code that could look like:
+When the query is built it has to be executed.
 
-    <?php
+### Select
 
-    use Braincrafted\ArrayQuery\QueryBuilder;
+All elements of an item can be selected using the star `*` operator:
+
+    $query->select('*');
+
+Single elements of an item can be selected:
+
+    $query->select('name');
+
+Multiple elements of an item can be selected:
+
+    $query->select([ 'name', 'age' ]);
+
+Filters can be applied in both cases:
+
+    $query->select('name', 'trim');
+    $query->select([ 'name' => 'trim', 'bio' => 'trim' ]);
+
+Multiple filters can also be applied:
+
+    $query->select('name', [ 'trim', 'upper' ]);
+    $query->select(
+        [
+            'name' => [ 'trim', 'upper' ],
+            'bio' => [ 'trim', 'upper' ]
+        ]
+    );
+
+### From
+
+Next the data source from which to select from has to be defined:
 
     $thorinsCompany = [
         [ 'name' => 'Bilbo Baggins', 'race' => 'Hobbit' ],
@@ -63,106 +114,58 @@ In code that could look like:
         // ...
     ];
 
-    $qb = new QueryBuilder();
+    $query->from($thorinsCompany);
 
-    // Select all dwarfes from Thorins company.
-    $query = $qb->create()
-        ->select('name')
-        ->from($thorinsCompany)
-        ->where('race', 'Dwarf');
-    $result = $query->execute();
+### Where
 
-    // Array (
-    //     [0] => Array (
-    //         [name] => Thorin Oakenshild
-    //     )
-    //     [1] => Array (
-    //         [name] => Balin
-    //     )
-    //     [2] => Array (
-    //         [name] => Bifur
-    //     )
-    //     ...
-    // )
+Where clauses define which items from the data source are put in the result set:
 
-It is also possible to use different operators.
+    $query->where('race', 'Dwarf');
 
-    <?php
+There are numerous different operators available, which can be defined as third parameter:
 
-    use Braincrafted\ArrayQuery\QueryBuilder;
+    $query->where('age', 50, '>');
 
-    $starks = [
-        [ 'name' => 'Robb', 'age' => 15 ],
-        [ 'name' => 'Sansa', 'age' => 11 ],
-        [ 'name' => 'Arya', 'age' => 9 ],
-        [ 'name' => 'Bran', 'age' => 7 ],
-        [ 'name' => 'Rickon', 'age' => 3 ]
-    ];
+Before the clause is evaluated filters can be applied to the test value:
 
-    // Select all of Ned's children older than 10.
-    $query = $qb->create()
-        ->select('name')
-        ->from($starks)
-        ->where('age', 10, '>');
-    $result = $query->execute();
+    $query->where('name', 'foo', '=', 'trim');
+    $query->where('name', 'foo', '=', [ 'trim', 'strtolower' ]);
 
-In the third example filters are added to modify values before they are evaluated:
+Filters can have arguments:
 
-    <?php
+    $query->where('name', 'nerd', '=', 'replace 3,e');
 
-    use Braincrafted\ArrayQuery\QueryBuilder;
+### Execute
 
-    $users = [
-        [ 'name' => '  haXor' ],
-        [ 'name' => '1337PWNR' ],
-        [ 'name' => '     LOL  '],
-        [ 'name' => 'N0b' ],
-        [ 'name' => 'n3rd' ]
-    ];
+There are multiple ways to execute a query.
 
-    $qb = new QueryBuilder();
+Find all results:
 
-    // Get all users with name "lol" (after trimming whitespaces and converting it lowercase)
-    $query = $qb->create()
-        ->select('name')
-        ->from($users)
-        ->where('name', 'lol', '=', [ 'trim', 'lower' ]);
-    $result = $query->execute();
+    $results = $query->findAll();
+    // [ [ 'name' => 'Balin' ], [ 'name' => 'Bifur' ], ... ]
 
-    // Array (
-    //     [0] => Array (
-    //         [name] =>      LOL
-    //     )
-    // )
+Find one result:
 
-    // Get all users with a name of length 3 (after trimming whitespaces)
-    $query = $qb->create()
-        ->select('name')
-        ->from($users)
-        ->where('name', 3, '=', [ 'trim', 'length' ]);
-    $result = $query->execute();
+    $result = $query->findOne();
+    // [ 'name' => 'Gandalf' ]
 
-    // Array (
-    //     [0] => Array (
-    //         [name] =>      LOL
-    //     )
-    //     [1] => Array (
-    //         [name] => N0b
-    //     )
-    // )
+*__Note:__ For performance reasons the first result is returned immediately. There is no error or exception when multiple
+results are returned.*
 
-    // Get all users with name nerd (replace the letter 3 in the name through e)
-    $query = $qb->create()
-        ->select('name')
-        ->from($users)
-        ->where('name', 'nerd', '=', [ 'replace 3,e' ]);
-    $result = $query->execute();
+Find scalar results:
 
-    // Array (
-    //     [0] => Array (
-    //         [name] => n3rd
-    //     )
-    // )
+    $result = $query->findScalar();
+    // [ 'Balin', 'Bifur', 'Bofur', ... ]
+
+*__Note:__ This only works when only one field is selected, an exception is thrown when multiple fields are selected
+(either through enumeration or by using the star operator).*
+
+Find one scalar result:
+
+    $result = $query->findOneScalar()
+    // 'Gandalf'
+
+*__Note:__ The same notes as for `findOne()` and `findScalar()` apply here.*
 
 
 Default operators and filters

@@ -114,7 +114,8 @@ class WhereEvaluationTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers Braincrafted\ArrayQuery\WhereEvaluation::addFilter()
      * @covers Braincrafted\ArrayQuery\WhereEvaluation::evaluate()
-     * @covers Braincrafted\ArrayQuery\WhereEvaluation::evaluateFilter()
+     * @covers Braincrafted\ArrayQuery\WhereEvaluation::evaluateFilters()
+     * @covers Braincrafted\ArrayQuery\Evaluation::evaluateFilter()
      */
     public function testEvaluateFilter()
     {
@@ -140,6 +141,7 @@ class WhereEvaluationTest extends \PHPUnit_Framework_TestCase
      * @covers Braincrafted\ArrayQuery\WhereEvaluation::addFilter()
      * @covers Braincrafted\ArrayQuery\WhereEvaluation::evaluate()
      * @covers Braincrafted\ArrayQuery\WhereEvaluation::evaluateFilter()
+     * @covers Braincrafted\ArrayQuery\Evaluation::evaluateFilter()
      */
     public function testEvaluateFilterWithArgs()
     {

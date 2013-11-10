@@ -11,7 +11,6 @@
 
 namespace Braincrafted\ArrayQuery;
 
-use Braincrafted\ArrayQuery\Exception\UnkownFilterException;
 use Braincrafted\ArrayQuery\Exception\UnkownOperatorException;
 use Braincrafted\ArrayQuery\Operator\OperatorInterface;
 use Braincrafted\ArrayQuery\Filter\FilterInterface;
@@ -26,13 +25,13 @@ use Braincrafted\ArrayQuery\Filter\FilterInterface;
  * @copyright 2013 Florian Eckerstorfer
  * @license   http://opensource.org/licenses/MIT The MIT License
  */
-class WhereEvaluation
+class WhereEvaluation extends Evaluation
 {
     /** @var array */
     private $operators = [];
 
     /** @var array */
-    private $filters = [];
+    protected $filters = [];
 
     /**
      * Adds an operator to the evaluation.
@@ -85,7 +84,7 @@ class WhereEvaluation
         }
 
         $value = isset($item[$clause['key']]) ? $item[$clause['key']] : null;
-        $value = $this->evaluateFilter($value, $clause);
+        $value = $this->evaluateFilters($value, $clause);
 
         if (false === isset($this->operators[$clause['operator']])) {
             throw new UnkownOperatorException(sprintf('The operator "%s" does not exist.', $clause['operator']));
@@ -110,27 +109,14 @@ class WhereEvaluation
      *
      * @see evaluate()
      */
-    protected function evaluateFilter($value, array $clause)
+    protected function evaluateFilters($value, array $clause)
     {
         if (true === isset($clause['filters'])) {
             if (false === is_array($clause['filters'])) {
                 $clause['filters'] = [ $clause['filters'] ];
             }
             foreach ($clause['filters'] as $filter) {
-                $filter = explode(' ', $filter, 2);
-                if (1 === count($filter)) {
-                    $args   = [];
-                    $filter = $filter[0];
-                } else {
-                    $args   = array_map('trim', explode(',', $filter[1]));
-                    $filter = $filter[0];
-                }
-
-                if (false === isset($this->filters[$filter])) {
-                    throw new UnkownFilterException(sprintf('The filter "%s" does not exist.', $filter));
-                }
-
-                $value = $this->filters[$filter]->evaluate($value, $args);
+                $value = $this->evaluateFilter($value, $filter);
             }
         }
 

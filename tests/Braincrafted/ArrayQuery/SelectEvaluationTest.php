@@ -30,6 +30,7 @@ class SelectEvaluationTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers Braincrafted\ArrayQuery\SelectEvaluation::addFilter()
      * @covers Braincrafted\ArrayQuery\SelectEvaluation::evaluate()
+     * @covers Braincrafted\ArrayQuery\Evaluation::evaluateFilter()
      */
     public function testEvaluateFilter()
     {
@@ -44,6 +45,7 @@ class SelectEvaluationTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers Braincrafted\ArrayQuery\SelectEvaluation::addFilter()
      * @covers Braincrafted\ArrayQuery\SelectEvaluation::evaluate()
+     * @covers Braincrafted\ArrayQuery\Evaluation::evaluateFilter()
      */
     public function testEvaluateFilterWithArgs()
     {

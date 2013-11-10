@@ -12,7 +12,6 @@
 namespace Braincrafted\ArrayQuery;
 
 use Braincrafted\ArrayQuery\Filter\FilterInterface;
-use Braincrafted\ArrayQuery\Exception\UnkownFilterException;
 
 /**
  * WhereEvaluation
@@ -22,10 +21,10 @@ use Braincrafted\ArrayQuery\Exception\UnkownFilterException;
  * @copyright 2013 Florian Eckerstorfer
  * @license   http://opensource.org/licenses/MIT The MIT License
  */
-class SelectEvaluation
+class SelectEvaluation extends Evaluation
 {
     /** @var array */
-    private $filters = [];
+    protected $filters = [];
 
     /**
      * Adds a filter.
@@ -58,20 +57,7 @@ class SelectEvaluation
         }
 
         foreach ($filters as $filter) {
-            $filter = explode(' ', $filter, 2);
-            if (1 === count($filter)) {
-                $args   = [];
-                $filter = $filter[0];
-            } else {
-                $args   = array_map('trim', explode(',', $filter[1]));
-                $filter = $filter[0];
-            }
-
-            if (false === isset($this->filters[$filter])) {
-                    throw new UnkownFilterException(sprintf('The filter "%s" does not exist.', $filter));
-                }
-
-            $value = $this->filters[$filter]->evaluate($value, $args);
+            $value = $this->evaluateFilter($value, $filter);
         }
 
         return $value;

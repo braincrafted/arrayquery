@@ -194,21 +194,9 @@ class ArrayQuery
 
         $selectAll = isset($this->select['*']);
 
-        foreach ($this->from as $index => $item) {
+        foreach ($this->from as $item) {
             if (true === $this->evaluateWhere($item)) {
-                $resultItem = [];
-                foreach ($item as $key => $value) {
-                    if (true === $selectAll || true === isset($this->select[$key])) {
-                        if (true === isset($this->select[$key])) {
-                            $value = $this->selectEvaluation->evaluate($value, $this->select[$key]);
-                        }
-                        if (true === $scalar) {
-                            $resultItem = $value;
-                        } else {
-                            $resultItem[$key] = $value;
-                        }
-                    }
-                }
+                $resultItem = $this->evaluateSelect($item, $scalar);
 
                 if (true === $one) {
                     return $resultItem;
@@ -237,5 +225,32 @@ class ArrayQuery
         }
 
         return $result;
+    }
+
+    /**
+     * Evaluates the select.
+     *
+     * @param array   $item
+     * @param boolean $scalar
+     *
+     * @return mixed
+     */
+    protected function evaluateSelect(array $item, $scalar)
+    {
+        $resultItem = [];
+        foreach ($item as $key => $value) {
+            if (true === isset($this->select['*']) || true === isset($this->select[$key])) {
+                if (true === isset($this->select[$key])) {
+                    $value = $this->selectEvaluation->evaluate($value, $this->select[$key]);
+                }
+                if (true === $scalar) {
+                    $resultItem = $value;
+                } else {
+                    $resultItem[$key] = $value;
+                }
+            }
+        }
+
+        return $resultItem;
     }
 }

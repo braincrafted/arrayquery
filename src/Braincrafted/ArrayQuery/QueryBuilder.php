@@ -11,7 +11,8 @@
 
 namespace Braincrafted\ArrayQuery;
 
-use Braincrafted\ArrayQuery\Operator;
+use Braincrafted\ArrayQuery\Factory\FilterFactory;
+use Braincrafted\ArrayQuery\Factory\OperatorFactory;
 
 /**
  * QueryBuilder
@@ -35,30 +36,8 @@ class QueryBuilder
      */
     public function __construct($selectEvaluation = null, $whereEvaluation = null)
     {
-        if (null !== $selectEvaluation && false === ($selectEvaluation instanceof SelectEvaluation)) {
-            throw new \InvalidArgumentException('Argument "selectEvaluation" must be an instance of SelectEvaluation.');
-        }
-        if (null === $selectEvaluation) {
-            $selectEvaluation = new SelectEvaluation;
-        }
-
-        if (null !== $whereEvaluation && false === ($whereEvaluation instanceof WhereEvaluation)) {
-            throw new \InvalidArgumentException('Argument "whereEvaluation" must be an instance of WhereEvaluation.');
-        }
-        if (null === $whereEvaluation) {
-            $whereEvaluation = new WhereEvaluation;
-        }
-
-        foreach (self::getDefaultOperators() as $operator) {
-            $whereEvaluation->addOperator($operator);
-        }
-        foreach (self::getDefaultFilters() as $filter) {
-            $whereEvaluation->addFilter($filter);
-            $selectEvaluation->addFilter($filter);
-        }
-
-        $this->selectEvaluation = $selectEvaluation;
-        $this->whereEvaluation = $whereEvaluation;
+        $this->selectEvaluation = $this->getSelectEvaluation($selectEvaluation);
+        $this->whereEvaluation  = $this->getWhereEvaluation($whereEvaluation);
     }
 
     /**
@@ -70,39 +49,47 @@ class QueryBuilder
     }
 
     /**
-     * @return array
+     * @param SelectEvaluation $selectEvaluation
      *
-     * @codeCoverageIgnore
+     * @return SelectEvaluation
      */
-    public static function getDefaultOperators()
+    protected function getSelectEvaluation($selectEvaluation = null)
     {
-        return [
-            new Operator\EqualOperator,
-            new Operator\GreaterOperator,
-            new Operator\GreaterOrEqualOperator,
-            new Operator\LikeOperator,
-            new Operator\LowerOperator,
-            new Operator\LowerOrEqualOperator,
-            new Operator\NotEqualOperator,
-            new Operator\NotLikeOperator
-        ];
+        if (null !== $selectEvaluation && false === ($selectEvaluation instanceof SelectEvaluation)) {
+            throw new \InvalidArgumentException('Argument "selectEvaluation" must be an instance of SelectEvaluation.');
+        }
+        if (null === $selectEvaluation) {
+            $selectEvaluation = new SelectEvaluation;
+        }
+
+        foreach (FilterFactory::getFilters() as $filter) {
+            $selectEvaluation->addFilter($filter);
+        }
+
+        return $selectEvaluation;
     }
 
     /**
-     * @return array
+     * @param WhereEvaluation $whereEvaluation
      *
-     * @codeCoverageIgnore
+     * @return WhereEvaluation
      */
-    public static function getDefaultFilters()
+    protected function getWhereEvaluation($whereEvaluation = null)
     {
-        return [
-            new Filter\LeftTrimFilter,
-            new Filter\LengthFilter,
-            new Filter\LowercaseFilter,
-            new Filter\UppercaseFilter,
-            new Filter\ReplaceFilter,
-            new Filter\RightTrimFilter,
-            new Filter\TrimFilter
-        ];
+        if (null !== $whereEvaluation && false === ($whereEvaluation instanceof WhereEvaluation)) {
+            throw new \InvalidArgumentException('Argument "whereEvaluation" must be an instance of WhereEvaluation.');
+        }
+        if (null === $whereEvaluation) {
+            $whereEvaluation = new WhereEvaluation;
+        }
+
+        foreach (OperatorFactory::getOperators() as $operator) {
+            $whereEvaluation->addOperator($operator);
+        }
+        foreach (FilterFactory::getFilters() as $filter) {
+            $whereEvaluation->addFilter($filter);
+        }
+
+        return $whereEvaluation;
     }
 }

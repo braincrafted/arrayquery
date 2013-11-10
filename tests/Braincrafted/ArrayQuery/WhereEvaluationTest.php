@@ -18,6 +18,7 @@ use Braincrafted\ArrayQuery\WhereEvaluation;
 /**
  * WhereEvaluationTest
  *
+ * @category  Test
  * @package   braincrafted/arrayquery
  * @author    Florian Eckerstorfer <florian@eckerstorfer.co>
  * @copyright 2013 Florian Eckerstorfer

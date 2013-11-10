@@ -16,6 +16,7 @@ use Braincrafted\ArrayQuery\Filter\RightTrimFilter;
 /**
  * RightTrimFilterTest
  *
+ * @category   Test
  * @package    braincrafted/arrayquery
  * @subpackage Filter
  * @author     Florian Eckerstorfer <florian@eckerstorfer.co>

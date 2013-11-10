@@ -160,6 +160,7 @@ class ArrayQueryTest extends \PHPUnit_Framework_TestCase
      * @covers Braincrafted\ArrayQuery\ArrayQuery::from()
      * @covers Braincrafted\ArrayQuery\ArrayQuery::execute()
      * @covers Braincrafted\ArrayQuery\ArrayQuery::findAll()
+     * @covers Braincrafted\ArrayQuery\ArrayQuery::evaluateSelect()
      */
     public function testExecuteSelectFilter()
     {
@@ -180,6 +181,7 @@ class ArrayQueryTest extends \PHPUnit_Framework_TestCase
      * @covers Braincrafted\ArrayQuery\ArrayQuery::from()
      * @covers Braincrafted\ArrayQuery\ArrayQuery::execute()
      * @covers Braincrafted\ArrayQuery\ArrayQuery::findAll()
+     * @covers Braincrafted\ArrayQuery\ArrayQuery::evaluateSelect()
      */
     public function testExecuteSelectMultiple()
     {
@@ -200,6 +202,7 @@ class ArrayQueryTest extends \PHPUnit_Framework_TestCase
      * @covers Braincrafted\ArrayQuery\ArrayQuery::from()
      * @covers Braincrafted\ArrayQuery\ArrayQuery::execute()
      * @covers Braincrafted\ArrayQuery\ArrayQuery::findAll()
+     * @covers Braincrafted\ArrayQuery\ArrayQuery::evaluateSelect()
      */
     public function testExecuteSelectMultipleWithFilter()
     {
@@ -220,6 +223,7 @@ class ArrayQueryTest extends \PHPUnit_Framework_TestCase
      * @covers Braincrafted\ArrayQuery\ArrayQuery::from()
      * @covers Braincrafted\ArrayQuery\ArrayQuery::execute()
      * @covers Braincrafted\ArrayQuery\ArrayQuery::findAll()
+     * @covers Braincrafted\ArrayQuery\ArrayQuery::evaluateSelect()
      */
     public function testExecuteSelectAll()
     {
@@ -260,6 +264,7 @@ class ArrayQueryTest extends \PHPUnit_Framework_TestCase
      * @covers Braincrafted\ArrayQuery\ArrayQuery::from()
      * @covers Braincrafted\ArrayQuery\ArrayQuery::execute()
      * @covers Braincrafted\ArrayQuery\ArrayQuery::findScalar()
+     * @covers Braincrafted\ArrayQuery\ArrayQuery::evaluateSelect()
      */
     public function testFindScalar()
     {

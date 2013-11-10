@@ -16,6 +16,7 @@ use Braincrafted\ArrayQuery\Operator\GreaterOrEqualOperator;
 /**
  * GreaterOrEqualOperatorTest
  *
+ * @category   Test
  * @package    braincrafted/arrayquery
  * @subpackage Operator
  * @author     Florian Eckerstorfer <florian@eckerstorfer.co>

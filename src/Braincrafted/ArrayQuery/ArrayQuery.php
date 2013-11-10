@@ -192,8 +192,6 @@ class ArrayQuery
 
         $result = [];
 
-        $selectAll = isset($this->select['*']);
-
         foreach ($this->from as $item) {
             if (true === $this->evaluateWhere($item)) {
                 $resultItem = $this->evaluateSelect($item, $scalar);

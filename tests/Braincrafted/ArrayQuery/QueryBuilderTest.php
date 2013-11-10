@@ -18,6 +18,7 @@ use Braincrafted\ArrayQuery\QueryBuilder;
 /**
  * QueryBuilderTest
  *
+ * @category  Test
  * @package   braincrafted/arrayquery
  * @author    Florian Eckerstorfer <florian@eckerstorfer.co>
  * @copyright 2013 Florian Eckerstorfer
@@ -33,6 +34,7 @@ class QueryBuilderTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @covers Braincrafted\ArrayQuery\QueryBuilder::__construct()
+     * @covers Braincrafted\ArrayQuery\QueryBuilder::getSelectEvaluation()
      * @expectedException \InvalidArgumentException
      */
     public function testConstructInvalidSelectEval()
@@ -42,15 +44,21 @@ class QueryBuilderTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @covers Braincrafted\ArrayQuery\QueryBuilder::__construct()
+     * @covers Braincrafted\ArrayQuery\QueryBuilder::getWhereEvaluation()
      * @expectedException \InvalidArgumentException
      */
     public function testConstructInvalidWhereEval()
     {
-        $qb = new QueryBuilder(m::mock('Braincrafted\ArrayQuery\SelectEvaluation'), new \stdClass);
+        $selectEval = m::mock('Braincrafted\ArrayQuery\SelectEvaluation');
+        $selectEval->shouldReceive('addFilter');
+
+        $qb = new QueryBuilder($selectEval, new \stdClass);
     }
 
     /**
      * @covers Braincrafted\ArrayQuery\QueryBuilder::__construct()
+     * @covers Braincrafted\ArrayQuery\QueryBuilder::getSelectEvaluation()
+     * @covers Braincrafted\ArrayQuery\QueryBuilder::getWhereEvaluation()
      */
     public function testConstructDefaultOperatorsDefaultFilters()
     {

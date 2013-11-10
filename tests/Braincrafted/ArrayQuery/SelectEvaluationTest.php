@@ -9,7 +9,12 @@ use Braincrafted\ArrayQuery\SelectEvaluation;
 /**
  * SelectEvaluationTest
  *
- * @group unit
+ * @category  Test
+ * @package   braincrafted/arrayquery
+ * @author    Florian Eckerstorfer <florian@eckerstorfer.co>
+ * @copyright 2013 Florian Eckerstorfer
+ * @license   http://opensource.org/licenses/MIT The MIT License
+ * @group     unit
  */
 class SelectEvaluationTest extends \PHPUnit_Framework_TestCase
 {

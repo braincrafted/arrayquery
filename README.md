@@ -40,8 +40,8 @@ ArrayQuery can be installed using Composer:
 Usage
 -----
 
-The `ArrayQuery` object has to be initialized with a `SelectEvaluation` and a `WhereEvaluation` object. By default, no
-operators and filters are added.
+The `ArrayQuery` object has to be initialized with a `SelectEvaluation` and a `WhereEvaluation` object. Filters can be
+added to `SelectEvaluation` and filters and operators can be added to `WhereEvaluation`.
 
     <?php
 
@@ -55,7 +55,7 @@ operators and filters are added.
         (new WhereEvaluation)->addOperator(new EqualOperator)
     );
 
-However, the `QueryBuilder` can be used to create an instance of `ArrayQuery` with default operators and filters.
+However, the `QueryBuilder` can be used to create an instance of `ArrayQuery` with built-in operators and filters.
 
     <?php
 
@@ -168,10 +168,11 @@ Find one scalar result:
 *__Note:__ The same notes as for `findOne()` and `findScalar()` apply here.*
 
 
-Default operators and filters
+Builtin operators and filters
 -----------------------------
 
-Some operators and filters are included by default and can be used out of the box (if the `QueryBuilder` is used to create the `ArrayQuery` object).
+Some operators and filters are builtin and can be used out of the box (if the `QueryBuilder` is used to create the
+`ArrayQuery` object).
 
 ### Operators
 

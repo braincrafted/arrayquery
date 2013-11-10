@@ -17,7 +17,7 @@ ArrayQuery is a library to query arrays.
     $result = $query->findAll();
 
 [![Build Status](https://travis-ci.org/braincrafted/arrayquery.png?branch=master)](https://travis-ci.org/braincrafted/arrayquery)
-[![Code Coverage](https://scrutinizer-ci.com/g/braincrafted/arrayquery/badges/coverage.png?s=1c95f66a513fda24f9f893264abb2a430a7cba5d)](https://scrutinizer-ci.com/g/braincrafted/arrayquery/)
+[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/braincrafted/arrayquery/badges/quality-score.png?s=834dd7aafe6fe1e8aa8300b43aa0ae5925489738)](https://scrutinizer-ci.com/g/braincrafted/arrayquery/)
 [![Code Coverage](https://scrutinizer-ci.com/g/braincrafted/arrayquery/badges/coverage.png?s=1c95f66a513fda24f9f893264abb2a430a7cba5d)](https://scrutinizer-ci.com/g/braincrafted/arrayquery/)
 
 Motivation

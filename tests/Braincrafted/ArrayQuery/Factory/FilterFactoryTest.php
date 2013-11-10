@@ -16,6 +16,7 @@ use Braincrafted\ArrayQuery\Factory\FilterFactory;
 /**
  * FilterFactoryTest
  *
+ * @category   Test
  * @package    braincrafted/arrayquery
  * @subpackage Factory
  * @author     Florian Eckerstorfer <florian@eckerstorfer.co>

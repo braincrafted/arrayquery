@@ -3,18 +3,20 @@ ArrayQuery
 
 ArrayQuery is a library to query arrays.
 
-    // Select the name of all of Ned's children older than 10.
-    $query = $qb->create()
-        ->select('name')
-        ->from([
-            [ 'name' => 'Robb',   'age' => 15 ],
-            [ 'name' => 'Sansa',  'age' => 11 ],
-            [ 'name' => 'Arya',   'age' => 9 ],
-            [ 'name' => 'Bran',   'age' => 7 ],
-            [ 'name' => 'Rickon', 'age' => 3 ]
-        ])
-        ->where('age', 10, '>');
-    $result = $query->findAll();
+```php
+// Select the name of all of Ned's children older than 10.
+$query = $qb->create()
+    ->select('name')
+    ->from([
+        [ 'name' => 'Robb',   'age' => 15 ],
+        [ 'name' => 'Sansa',  'age' => 11 ],
+        [ 'name' => 'Arya',   'age' => 9 ],
+        [ 'name' => 'Bran',   'age' => 7 ],
+        [ 'name' => 'Rickon', 'age' => 3 ]
+    ])
+    ->where('age', 10, '>');
+$result = $query->findAll();
+```
 
 [![Build Status](https://travis-ci.org/braincrafted/arrayquery.png?branch=master)](https://travis-ci.org/braincrafted/arrayquery)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/braincrafted/arrayquery/badges/quality-score.png?s=834dd7aafe6fe1e8aa8300b43aa0ae5925489738)](https://scrutinizer-ci.com/g/braincrafted/arrayquery/)
@@ -33,12 +35,13 @@ Installation
 
 ArrayQuery can be installed using Composer:
 
-    {
-        "require": {
-            "braincrafted/arrayquery": "dev-master"
-        }
+```json
+{
+    "require": {
+        "braincrafted/arrayquery": "dev-master"
     }
-
+}
+```
 
 Usage
 -----
@@ -46,26 +49,30 @@ Usage
 The `ArrayQuery` object has to be initialized with a `SelectEvaluation` and a `WhereEvaluation` object. Filters can be
 added to `SelectEvaluation` and filters and operators can be added to `WhereEvaluation`.
 
-    <?php
+```php
+<?php
 
-    use Braincrafted\ArrayQuery\ArrayQuery;
-    use Braincrafted\ArrayQuery\SelectEvaluation;
-    use Braincrafted\ArrayQuery\WhereEvaluation;
-    use Braincrafted\ArrayQuery\Operator\EqualOperator
+use Braincrafted\ArrayQuery\ArrayQuery;
+use Braincrafted\ArrayQuery\SelectEvaluation;
+use Braincrafted\ArrayQuery\WhereEvaluation;
+use Braincrafted\ArrayQuery\Operator\EqualOperator
 
-    $query = new ArrayQuery(
-        new SelectEvaluation,
-        (new WhereEvaluation)->addOperator(new EqualOperator)
-    );
+$query = new ArrayQuery(
+    new SelectEvaluation,
+    (new WhereEvaluation)->addOperator(new EqualOperator)
+);
+```
 
 However, the `QueryBuilder` can be used to create an instance of `ArrayQuery` with built-in operators and filters.
 
-    <?php
+```php
+<?php
 
-    use Braincrafted\ArrayQuery\QueryBuilder;
+use Braincrafted\ArrayQuery\QueryBuilder;
 
-    $qb = new QueryBuilder;
-    $query = $qb->create();
+$qb = new QueryBuilder;
+$query = $qb->create();
+```
 
 The query object can be used to build queries and execute them. Building the query object contains of three steps:
 
@@ -79,64 +86,84 @@ When the query is built it has to be executed.
 
 All elements of an item can be selected using the star `*` operator:
 
-    $query->select('*');
+```php
+$query->select('*');
+```
 
 Single elements of an item can be selected:
 
-    $query->select('name');
+```php
+$query->select('name');
+```
 
 Multiple elements of an item can be selected:
 
-    $query->select([ 'name', 'age' ]);
+```php
+$query->select([ 'name', 'age' ]);
+```
 
 Filters can be applied in both cases:
 
-    $query->select('name', 'trim');
-    $query->select([ 'name' => 'trim', 'bio' => 'trim' ]);
+```php   
+$query->select('name', 'trim');
+$query->select([ 'name' => 'trim', 'bio' => 'trim' ]);
+```
 
 Multiple filters can also be applied:
 
-    $query->select('name', [ 'trim', 'upper' ]);
+```php
+$query->select('name', [ 'trim', 'upper' ]);
     $query->select(
         [
             'name' => [ 'trim', 'upper' ],
             'bio' => [ 'trim', 'upper' ]
         ]
     );
+```
 
 ### From
 
 Next the data source from which to select from has to be defined:
 
-    $thorinsCompany = [
-        [ 'name' => 'Bilbo Baggins', 'race' => 'Hobbit' ],
-        [ 'name' => 'Gandalf', 'race' => 'Wizard' ],
-        [ 'name' => 'Thorin Oakenshild', 'race' => 'Dwarf' ],
-        [ 'name' => 'Balin', 'race' => 'Dwarf'],
-        [ 'name' => 'Bifur', 'race' => 'Dwarf'],
-        // ...
-    ];
+```php
+$thorinsCompany = [
+    [ 'name' => 'Bilbo Baggins', 'race' => 'Hobbit' ],
+    [ 'name' => 'Gandalf', 'race' => 'Wizard' ],
+    [ 'name' => 'Thorin Oakenshild', 'race' => 'Dwarf' ],
+    [ 'name' => 'Balin', 'race' => 'Dwarf'],
+    [ 'name' => 'Bifur', 'race' => 'Dwarf'],
+    // ...
+];
 
-    $query->from($thorinsCompany);
+$query->from($thorinsCompany);
+```
 
 ### Where
 
 Where clauses define which items from the data source are put in the result set:
 
-    $query->where('race', 'Dwarf');
+```php
+$query->where('race', 'Dwarf');
+```
 
 There are numerous different operators available, which can be defined as third parameter:
 
-    $query->where('age', 50, '>');
+```php
+$query->where('age', 50, '>');
+```
 
 Before the clause is evaluated filters can be applied to the test value:
 
-    $query->where('name', 'foo', '=', 'trim');
-    $query->where('name', 'foo', '=', [ 'trim', 'strtolower' ]);
+```php   
+$query->where('name', 'foo', '=', 'trim');
+$query->where('name', 'foo', '=', [ 'trim', 'strtolower' ]);
+```
 
 Filters can have arguments:
 
-    $query->where('name', 'nerd', '=', 'replace 3,e');
+```php
+$query->where('name', 'nerd', '=', 'replace 3,e');
+```
 
 ### Execute
 
@@ -144,29 +171,37 @@ There are multiple ways to execute a query.
 
 Find all results:
 
-    $results = $query->findAll();
-    // [ [ 'name' => 'Balin' ], [ 'name' => 'Bifur' ], ... ]
+```php
+$results = $query->findAll();
+// [ [ 'name' => 'Balin' ], [ 'name' => 'Bifur' ], ... ]
+```
 
 Find one result:
 
-    $result = $query->findOne();
-    // [ 'name' => 'Gandalf' ]
+```php
+$result = $query->findOne();
+// [ 'name' => 'Gandalf' ]
+```
 
 *__Note:__ For performance reasons the first result is returned immediately. There is no error or exception when multiple
 results are returned.*
 
 Find scalar results:
 
-    $result = $query->findScalar();
-    // [ 'Balin', 'Bifur', 'Bofur', ... ]
+```php
+$result = $query->findScalar();
+// [ 'Balin', 'Bifur', 'Bofur', ... ]
+```
 
 *__Note:__ This only works when only one field is selected, an exception is thrown when multiple fields are selected
 (either through enumeration or by using the star operator).*
 
 Find one scalar result:
 
-    $result = $query->findOneScalar()
-    // 'Gandalf'
+```php
+$result = $query->findOneScalar()
+// 'Gandalf'
+```
 
 *__Note:__ The same notes as for `findOne()` and `findScalar()` apply here.*
 

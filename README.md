@@ -23,7 +23,7 @@ ArrayQuery is a library to query arrays.
 Motivation
 ----------
 
-Data is often stored in arrays or arrays (for example, after reading it from CSV) and some items (or rows) have to be
+Data is often stored in arrays of arrays (for example, after reading it from CSV) and some items (or rows) have to be
 picked out before the data can be further processed or stored in a database. Writing such code is not very hard, but
 it often gets messy. Loops within loops, multiple if or switch statement, temporary variables and so on. ArrayQuery
 provided a clean and testable interface (inspired by query builders from ORMs) for these "array queries."

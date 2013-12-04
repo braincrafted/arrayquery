@@ -3,3 +3,5 @@
 /docs/api/
 /phpunit.xml
 /vendor/
+*.sublime-project
+*.sublime-workspace

@@ -142,9 +142,9 @@ class ArrayQuery
      *
      * @return array The full result
      */
-    public function findAll()
+    public function findAll($preserveKeys = false)
     {
-        return $this->execute();
+        return $this->execute(false, false, $preserveKeys);
     }
 
     /**
@@ -162,9 +162,9 @@ class ArrayQuery
      *
      * @return array An array of scalar values.
      */
-    public function findScalar()
+    public function findScalar($preserveKeys = false)
     {
-        return $this->execute(false, true);
+        return $this->execute(false, true, $preserveKeys);
     }
 
     /**
@@ -184,7 +184,7 @@ class ArrayQuery
      *
      * @throws \InvalidArgumentException when `$scalar` is `true` and more than one field is selected.
      */
-    public function execute($one = false, $scalar = false)
+    public function execute($one = false, $scalar = false, $preserveKeys = false)
     {
         if (true === $scalar && (count($this->select) > 1 || true === isset($this->select['*']))) {
             throw new \InvalidArgumentException('$scalar can only be true if only one field is selected.');
@@ -192,7 +192,7 @@ class ArrayQuery
 
         $result = [];
 
-        foreach ($this->from as $item) {
+        foreach ($this->from as $key => $item) {
             if (true === $this->evaluateWhere($item)) {
                 $resultItem = $this->evaluateSelect($item, $scalar);
 
@@ -200,7 +200,12 @@ class ArrayQuery
                     return $resultItem;
                 }
 
-                $result[] = $resultItem;
+                if ($preserveKeys) {
+                    $result[$key] = $resultItem;
+                }
+                else {
+                    $result[] = $resultItem;
+                }
             }
         }
 

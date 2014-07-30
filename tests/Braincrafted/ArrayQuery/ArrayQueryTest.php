@@ -322,4 +322,64 @@ class ArrayQueryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('foo', $result);
     }
+
+    /**
+     * @covers Braincrafted\ArrayQuery\ArrayQuery::select()
+     * @covers Braincrafted\ArrayQuery\ArrayQuery::from()
+     * @covers Braincrafted\ArrayQuery\ArrayQuery::execute()
+     * @covers Braincrafted\ArrayQuery\ArrayQuery::where()
+     * @covers Braincrafted\ArrayQuery\ArrayQuery::evaluateWhere()
+     * @covers Braincrafted\ArrayQuery\ArrayQuery::findAll()
+     */
+    public function testPreserveKeys()
+    {
+        $this->selectEvaluation->shouldReceive('evaluate')->with('foo', m::any())->andReturn('foo');
+
+        $this->whereEvaluation
+            ->shouldReceive('evaluate')
+            ->with([ 'name' => 'foo' ], [ 'key' => 'name', 'value' => 'foo', 'operator' => '=', 'filters' => [] ])
+            ->once()
+            ->andReturn(true);
+
+        $data = [ 'lorem' => [ 'name' => 'foo' ] ];
+        $q = (new ArrayQuery($this->selectEvaluation, $this->whereEvaluation))
+            ->select('name')
+            ->from($data)
+            ->where('name', 'foo', '=');
+        $result = $q->findAll(true);
+
+        $keys = array_keys($result);
+
+        $this->assertEquals('lorem', $keys[0]);
+    }
+
+    /**
+     * @covers Braincrafted\ArrayQuery\ArrayQuery::select()
+     * @covers Braincrafted\ArrayQuery\ArrayQuery::from()
+     * @covers Braincrafted\ArrayQuery\ArrayQuery::execute()
+     * @covers Braincrafted\ArrayQuery\ArrayQuery::where()
+     * @covers Braincrafted\ArrayQuery\ArrayQuery::evaluateWhere()
+     * @covers Braincrafted\ArrayQuery\ArrayQuery::findScalar()
+     */
+    public function testPreserveKeysScalar()
+    {
+        $this->selectEvaluation->shouldReceive('evaluate')->with('foo', m::any())->andReturn('foo');
+
+        $this->whereEvaluation
+            ->shouldReceive('evaluate')
+            ->with([ 'name' => 'foo' ], [ 'key' => 'name', 'value' => 'foo', 'operator' => '=', 'filters' => [] ])
+            ->once()
+            ->andReturn(true);
+
+        $data = [ 'lorem' => [ 'name' => 'foo' ] ];
+        $q = (new ArrayQuery($this->selectEvaluation, $this->whereEvaluation))
+            ->select('name')
+            ->from($data)
+            ->where('name', 'foo', '=');
+        $result = $q->findScalar(true);
+
+        $keys = array_keys($result);
+
+        $this->assertEquals('lorem', $keys[0]);
+    }
 }
